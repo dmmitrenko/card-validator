@@ -92,7 +92,7 @@ func startTestServer(t *testing.T, mockApiClient *mocks.MockApiClient) (*grpc.Se
 	handler.NewCardValidatorHandler(server, cardValidator)
 	go func() {
 		if err := server.Serve(lis); err != nil {
-			t.Fatalf("failed to serve: %v", err)
+			t.Logf("failed to serve: %v", err)
 		}
 	}()
 

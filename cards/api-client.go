@@ -17,13 +17,6 @@ type ApiClient struct {
 	HttpClient *http.Client
 }
 
-type BINResponse struct {
-	Scheme  string `json:"scheme"`
-	Brand   string `json:"brand"`
-	Bank    string `json:"bank"`
-	Country string `json:"country"`
-}
-
 func NewApiClient(baseUrl string) *ApiClient {
 	return &ApiClient{
 		ApiBaseUrl: baseUrl,

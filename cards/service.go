@@ -49,6 +49,7 @@ func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
 		return domain.ErrLuhnAlgorithm
 	}
 
+	// in some cases it can be up to 8
 	err := s.apiClient.CheckINN(number[:6])
 	if err != nil {
 		return err
