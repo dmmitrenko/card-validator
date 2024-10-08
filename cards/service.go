@@ -3,6 +3,7 @@ package cards
 import (
 	"context"
 	"time"
+	"unicode"
 
 	"github.com/dmmitrenko/card-validator/domain"
 )
@@ -19,15 +20,34 @@ func NewCardValidator() *CardValidator {
 }
 
 func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
-	if s.isExpired(card.ExpirationMonth, card.ExpirationYear) {
-		return nil
+	number := card.Number
+
+	if number[0] == '0' || len(number) < 6 || len(number) > 20 {
+		return domain.ErrBadParamInput
 	}
 
-	if s.luhnCheck(card.Number) {
-		return nil
+	if !s.isValidNumber(number) {
+		return domain.ErrBadParamInput
+	}
+
+	if s.isExpired(card.ExpirationMonth, card.ExpirationYear) {
+		return domain.ErrExpiredCard
+	}
+
+	if !s.luhnCheck(card.Number) {
+		return domain.ErrLuhnAlgorithm
 	}
 
 	return nil
+}
+
+func (s *CardValidator) isValidNumber(cardNumber string) bool {
+	for _, r := range cardNumber {
+		if !unicode.IsDigit(r) {
+			return false
+		}
+	}
+	return true
 }
 
 func (s *CardValidator) isExpired(expMonth int, expYear int) bool {
