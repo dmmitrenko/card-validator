@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/dmmitrenko/card-validator/cards"
+	"github.com/dmmitrenko/card-validator/internal/config"
 	"github.com/dmmitrenko/card-validator/internal/grpc/handler"
 	"github.com/dmmitrenko/card-validator/internal/grpc/middleware"
 	"google.golang.org/grpc"
@@ -27,7 +28,8 @@ func (s *gRPCServer) Run() error {
 		grpc.UnaryInterceptor(middleware.UnaryInterceptor()),
 	)
 
-	apiClient := cards.NewApiClient("https://api.chargeblast.io/bin/")
+	cfg := config.NewConfig()
+	apiClient := cards.NewApiClient(cfg.APIURL)
 	cardValidator := cards.NewCardValidator(apiClient)
 	handler.NewCardValidatorHandler(grpcServer, cardValidator)
 
