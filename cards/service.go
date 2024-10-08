@@ -30,6 +30,14 @@ func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
 		return domain.ErrCardNumber
 	}
 
+	if card.ExpirationMonth < 1 || card.ExpirationMonth > 12 {
+		return domain.ErrMonthNumber
+	}
+
+	if card.ExpirationYear < 0 {
+		return domain.ErrYearNumber
+	}
+
 	if s.isExpired(card.ExpirationMonth, card.ExpirationYear) {
 		return domain.ErrExpiredCard
 	}

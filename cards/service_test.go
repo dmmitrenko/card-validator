@@ -57,6 +57,28 @@ func TestCardValidator(t *testing.T) {
 		assert.Equal(t, domain.ErrCardNumber, err)
 	})
 
+	t.Run("InvalidMonth", func(t *testing.T) {
+		card := &domain.Card{
+			Number:          "4111111111111111",
+			ExpirationMonth: 13,
+			ExpirationYear:  time.Now().Year() + 1,
+		}
+
+		err := v.Validate(context.Background(), card)
+		assert.Equal(t, domain.ErrMonthNumber, err)
+	})
+
+	t.Run("InvalidYear", func(t *testing.T) {
+		card := &domain.Card{
+			Number:          "4111111111111111",
+			ExpirationMonth: 12,
+			ExpirationYear:  -1,
+		}
+
+		err := v.Validate(context.Background(), card)
+		assert.Equal(t, domain.ErrYearNumber, err)
+	})
+
 	t.Run("ExpiredCard", func(t *testing.T) {
 		card := &domain.Card{
 			Number:          "4111111111111111",
