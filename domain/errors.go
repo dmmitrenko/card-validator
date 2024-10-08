@@ -26,4 +26,5 @@ var (
 	ErrYearNumber    = &ErrorWithCode{Code: 3, Message: "invalid year"}
 	ErrLuhnAlgorithm = &ErrorWithCode{Code: 4, Message: "card doesn't match Luhn's algorithm"}
 	ErrExpiredCard   = &ErrorWithCode{Code: 5, Message: "card is expired"}
+	ErrUnknownINN    = &ErrorWithCode{Code: 6, Message: "this BIN is not found"}
 )

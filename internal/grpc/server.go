@@ -27,7 +27,8 @@ func (s *gRPCServer) Run() error {
 		grpc.UnaryInterceptor(middleware.UnaryInterceptor()),
 	)
 
-	cardValidator := cards.NewCardValidator()
+	apiClient := cards.NewApiClient("https://api.chargeblast.io/bin/")
+	cardValidator := cards.NewCardValidator(apiClient)
 	handler.NewCardValidatorHandler(grpcServer, cardValidator)
 
 	log.Println("Starting gRPC server on", s.address)

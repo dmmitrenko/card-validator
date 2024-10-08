@@ -13,10 +13,13 @@ type Validator interface {
 }
 
 type CardValidator struct {
+	apiClient ApiClientInterface
 }
 
-func NewCardValidator() *CardValidator {
-	return &CardValidator{}
+func NewCardValidator(apiClient ApiClientInterface) *CardValidator {
+	return &CardValidator{
+		apiClient: apiClient,
+	}
 }
 
 func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
@@ -44,6 +47,11 @@ func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
 
 	if !s.luhnCheck(card.Number) {
 		return domain.ErrLuhnAlgorithm
+	}
+
+	err := s.apiClient.CheckINN(number[:6])
+	if err != nil {
+		return err
 	}
 
 	return nil

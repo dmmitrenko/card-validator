@@ -6,12 +6,16 @@ import (
 	"time"
 
 	"github.com/dmmitrenko/card-validator/cards"
+	"github.com/dmmitrenko/card-validator/cards/mocks"
 	"github.com/dmmitrenko/card-validator/domain"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCardValidator(t *testing.T) {
-	v := cards.NewCardValidator()
+	mockApiClient := mocks.NewMockApiClient(func(iin string) error {
+		return nil
+	})
+	v := cards.NewCardValidator(mockApiClient)
 
 	t.Run("InvalidCardNumberStartsWithZero", func(t *testing.T) {
 		card := &domain.Card{
