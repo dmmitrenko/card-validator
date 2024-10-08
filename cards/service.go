@@ -23,7 +23,7 @@ func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
 		return nil
 	}
 
-	if s.luhnSum(card.Number, false)%10 != 0 {
+	if s.luhnCheck(card.Number) {
 		return nil
 	}
 
@@ -37,19 +37,23 @@ func (s *CardValidator) isExpired(expMonth int, expYear int) bool {
 	return currentDate.After(cardExpirationDate)
 }
 
-func (s *CardValidator) luhnSum(cardNumber string, isSecond bool) int {
-	if len(cardNumber) == 0 {
-		return 0
-	}
+func (s *CardValidator) luhnCheck(cardNumber string) bool {
+	sum := 0
+	isSecond := false
 
-	lastDigit := int(cardNumber[len(cardNumber)-1] - '0')
+	for i := len(cardNumber) - 1; i >= 0; i-- {
+		digit := int(cardNumber[i] - '0')
 
-	if isSecond {
-		lastDigit *= 2
-		if lastDigit > 9 {
-			lastDigit -= 9
+		if isSecond {
+			digit *= 2
+			if digit > 9 {
+				digit -= 9
+			}
 		}
+
+		sum += digit
+		isSecond = !isSecond
 	}
 
-	return lastDigit + s.luhnSum(cardNumber[:len(cardNumber)-1], !isSecond)
+	return sum%10 == 0
 }
