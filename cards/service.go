@@ -26,6 +26,8 @@ func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
 	if s.luhnSum(card.Number, false)%10 != 0 {
 		return nil
 	}
+
+	return nil
 }
 
 func (s *CardValidator) isExpired(expMonth int, expYear int) bool {

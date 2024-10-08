@@ -24,9 +24,9 @@ func NewCardValidatorHandler(grpc *grpc.Server, cardValidator cards.Validator) {
 
 func (h *CardValidatorHandler) ValidateCard(ctx context.Context, req *proto.CardValidationRequest) (*proto.CardValidationResponse, error) {
 	card := &domain.Card{
-		Number:          "4141",
-		ExpirationMonth: 10,
-		ExpirationYear:  2025,
+		Number:          req.CardNumber,
+		ExpirationMonth: int(req.ExpirationMonth),
+		ExpirationYear:  int(req.ExpirationYear),
 	}
 
 	err := h.cardValidator.Validate(ctx, card)
