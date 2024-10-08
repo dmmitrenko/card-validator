@@ -22,12 +22,12 @@ func NewCardValidator() *CardValidator {
 func (s *CardValidator) Validate(ctx context.Context, card *domain.Card) error {
 	number := card.Number
 
-	if number[0] == '0' || len(number) < 6 || len(number) > 20 {
-		return domain.ErrBadParamInput
+	if number[0] == '0' || len(number) < 12 || len(number) > 19 {
+		return domain.ErrCardNumber
 	}
 
 	if !s.isValidNumber(number) {
-		return domain.ErrBadParamInput
+		return domain.ErrCardNumber
 	}
 
 	if s.isExpired(card.ExpirationMonth, card.ExpirationYear) {

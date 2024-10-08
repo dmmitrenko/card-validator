@@ -7,7 +7,6 @@ import (
 	"github.com/dmmitrenko/card-validator/domain"
 	"github.com/dmmitrenko/card-validator/internal/grpc/proto"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 )
 
 type CardValidatorHandler struct {
@@ -33,13 +32,17 @@ func (h *CardValidatorHandler) ValidateCard(ctx context.Context, req *proto.Card
 	err := h.cardValidator.Validate(ctx, card)
 
 	if err != nil {
-		return &proto.CardValidationResponse{
-			Valid: false,
-			Error: &proto.ErrorResponse{
-				Message: err.Error(),
-				Code:    int32(codes.InvalidArgument),
-			},
-		}, nil
+		if codedErr, ok := err.(domain.CodedError); ok {
+			return &proto.CardValidationResponse{
+				Valid: false,
+				Error: &proto.ErrorResponse{
+					Message: err.Error(),
+					Code:    codedErr.ErrorCode(),
+				},
+			}, nil
+		}
+
+		return nil, err
 	}
 
 	res := &proto.CardValidationResponse{

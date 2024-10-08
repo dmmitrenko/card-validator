@@ -20,6 +20,6 @@ message CardValidationResponse {
 }
 
 message ErrorResponse{
-    int32 code = 1;
+    string code = 1;
     string message = 2;
 }
